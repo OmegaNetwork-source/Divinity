@@ -1,0 +1,12 @@
+burner.json
+server/upgrades.json
+
+# Local config with RPC API key – copy config.local.js.example to config.local.js and add your key
+config.local.js
+
+node_modules/
+cache_backup.json
+cache.json.bak
+sugar.log
+
+assets/

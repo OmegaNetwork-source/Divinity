@@ -1,0 +1,6 @@
+// Copy this file to config.local.js and add your real RPC URL (with API key).
+// config.local.js is in .gitignore so your key is never committed.
+(function () {
+    if (typeof window === 'undefined') return;
+    window.DIVINITY_RPC_URL = 'https://mainnet.helius-rpc.com/?api-key=YOUR_HELIUS_API_KEY';
+})();

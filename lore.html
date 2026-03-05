@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lore | Divinity</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="theme-heaven lore-page" id="body">
+    <canvas id="bg-canvas"></canvas>
+    <div id="god-rays" class="god-rays"></div>
+    <div id="vignette"></div>
+    <div id="hell-overlay" class="hell-overlay"></div>
+    <div id="hell-flames" class="hell-flames"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><span class="logo-text">DIVINITY</span></a>
+            </div>
+            <div class="nav-center">
+                <a href="lore.html" class="nav-link">Lore</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="upgrades.html" class="nav-link">Upgrades</a>
+                <a href="play.html" class="nav-link">Play</a>
+            </div>
+            <div class="nav-right">
+                <div class="realm-toggle" id="realm-toggle">
+                    <div class="toggle-track">
+                        <div class="toggle-indicator"></div>
+                    </div>
+                    <span class="realm-label label-heaven active">HEAVEN</span>
+                    <span class="realm-label label-hell">HELL</span>
+                </div>
+                <button type="button" class="nav-wallet-btn" id="nav-wallet-btn" title="Connect or disconnect wallet">
+                    <span class="nav-wallet-btn-text">Connect Wallet</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="lore-main">
+        <div class="lore-layout">
+            <article class="lore-book">
+                <header class="lore-header">
+                <h1 class="lore-title">The Book of Divinity</h1>
+                <p class="lore-subtitle">The First Scroll</p>
+            </header>
+
+            <section class="lore-chapter">
+                <h2 class="chapter-heading">Chapter 1</h2>
+
+                <p class="verse"><span class="verse-num">1</span> In the beginning was the War, and the War was without end; and the hosts of the high realm and the depths clashed upon the face of eternity.</p>
+
+                <p class="verse"><span class="verse-num">2</span> And the angels prevailed in the sight of all, and it was proclaimed that the Fallen had been cast down and defeated, and that the gates of Hell were their prison forever.</p>
+
+                <p class="verse"><span class="verse-num">3</span> But the Fallen did not fall by the sword alone. For in secret counsel they had spoken: <em>We shall yield the battle, that we may gain the ground.</em></p>
+
+                <p class="verse"><span class="verse-num">4</span> They had chosen defeat. They had chosen banishment. For in the deepest pit, in the heart of the abyss where no light had ever reached, there lay that which they sought—<strong>the Ashen Keystone</strong>.</p>
+
+                <p class="verse"><span class="verse-num">5</span> A relic of the first age, forged before the War was named; a shard of the old world, cold and black and waiting. Whosoever wields it may turn the tide of all realms.</p>
+
+                <p class="verse"><span class="verse-num">6</span> So the demons laid down their arms not in surrender, but in strategy. They let themselves be driven into the dark, so that in the dark they might find the key to the war that had only just begun.</p>
+
+                <p class="verse"><span class="verse-num">7</span> And the high realm rejoiced, believing the conflict ended. But in the depths, the Fallen rose from the ash and set their eyes upon the Keystone, and the true battle was yet to be waged.</p>
+
+                <p class="verse"><span class="verse-num">8</span> Thus it is written: the fight is not over. The War has only begun. Choose thy side—Elysium or Tartarus—and let thy soul be counted among the ten thousand that shall decide the fate of Divinity.</p>
+            </section>
+            </article>
+            <aside class="lore-video-wrap">
+                <div class="lore-video-inner">
+                    <video class="lore-trailer" controls playsinline preload="auto" autoplay muted loop>
+                        <source src="Trailer.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <div id="custom-cursor"></div>
+    <div id="cursor-trail"></div>
+
+    <script src="config.local.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

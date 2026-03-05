@@ -1,0 +1,57 @@
+{
+  "tokenStandard": "nft",
+  "number": 100000,
+  "symbol": "DIV",
+  "sellerFeeBasisPoints": 0,
+  "isMutable": true,
+  "isSequential": false,
+  "creators": [
+    {
+      "address": "FTCQPhg846q25KuVkQa6Nyb2TYPJjdYayqWdSLBijPBX",
+      "share": 100
+    }
+  ],
+  "uploadMethod": "bundlr",
+  "ruleSet": null,
+  "awsConfig": null,
+  "sdriveApiKey": null,
+  "pinataConfig": null,
+  "hiddenSettings": {
+    "name": "Divinity #$ID+1$",
+    "uri": "https://gateway.irys.xyz/BKpY6vSVG28TaW1E2JNbSEPEr9Qi8kdSMza8KVgZMW2i",
+    "hash": "4Dnt4FF6b2i1hFS4m4iS52w8ur8sf8Un"
+  },
+  "guards": {
+    "default": {
+      "botTax": {
+        "value": 0.01,
+        "lastInstruction": true
+      },
+      "solPayment": {
+        "value": 0.005,
+        "destination": "FTCQPhg846q25KuVkQa6Nyb2TYPJjdYayqWdSLBijPBX"
+      },
+      "tokenPayment": null,
+      "startDate": null,
+      "thirdPartySigner": null,
+      "tokenGate": null,
+      "gatekeeper": null,
+      "endDate": null,
+      "allowList": null,
+      "mintLimit": null,
+      "nftPayment": null,
+      "redeemedAmount": null,
+      "addressGate": null,
+      "nftGate": null,
+      "nftBurn": null,
+      "tokenBurn": null,
+      "freezeSolPayment": null,
+      "freezeTokenPayment": null,
+      "programGate": null,
+      "allocation": null,
+      "token2022Payment": null
+    },
+    "groups": []
+  },
+  "maxEditionSupply": null
+}

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrades | Divinity</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="theme-heaven upgrades-page" id="body">
+    <canvas id="bg-canvas"></canvas>
+    <div id="god-rays" class="god-rays"></div>
+    <div id="vignette"></div>
+    <div id="hell-overlay" class="hell-overlay"></div>
+    <div id="hell-flames" class="hell-flames"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><span class="logo-text">DIVINITY</span></a>
+            </div>
+            <div class="nav-center">
+                <a href="lore.html" class="nav-link">Lore</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="upgrades.html" class="nav-link active">Upgrades</a>
+                <a href="play.html" class="nav-link">Play</a>
+            </div>
+            <div class="nav-right">
+                <div class="realm-toggle" id="realm-toggle">
+                    <div class="toggle-track">
+                        <div class="toggle-indicator"></div>
+                    </div>
+                    <span class="realm-label label-heaven active">HEAVEN</span>
+                    <span class="realm-label label-hell">HELL</span>
+                </div>
+                <button type="button" class="nav-wallet-btn" id="nav-wallet-btn" title="Connect or disconnect wallet">
+                    <span class="nav-wallet-btn-text">Connect Wallet</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="upgrades-main">
+        <section class="upgrades-hero">
+            <h1 class="upgrades-title">Upgrade your soul</h1>
+            <p class="upgrades-lead">Choose an NFT, then pick your path. Angel or Demon—and beyond.</p>
+        </section>
+
+        <section class="upgrades-connect" id="upgrades-connect">
+            <h2>Your Divinity NFTs</h2>
+            <p class="upgrades-connect-hint">Connect your wallet to see NFTs you can upgrade. Click one to select it.</p>
+            <div class="upgrades-nft-list" id="upgrades-nft-list">
+                <!-- Populated when wallet connected -->
+            </div>
+        </section>
+
+        <section class="upgrades-choose" id="upgrades-choose">
+            <h2>Choose your upgrade</h2>
+            <p class="upgrades-choose-hint">Select an NFT above, then pick one path below.</p>
+            <div class="upgrades-cards">
+                <article class="upgrade-card" data-tier="1">
+                    <div class="upgrade-card-glow"></div>
+                    <span class="upgrade-card-badge upgrade-card-badge-mystery">Mystery</span>
+                    <h3 class="upgrade-card-title">Upgrade 1</h3>
+                    <p class="upgrade-card-desc">Angel or Demon (mystery—revealed at mint)</p>
+                    <p class="upgrade-card-price">$5</p>
+                    <button type="button" class="btn btn-upgrade" data-tier="1" disabled>Select NFT first</button>
+                </article>
+                <article class="upgrade-card" data-tier="2">
+                    <div class="upgrade-card-glow"></div>
+                    <h3 class="upgrade-card-title">Upgrade 2</h3>
+                    <p class="upgrade-card-desc">Choose Angel or Demon</p>
+                    <p class="upgrade-card-price">$10</p>
+                    <button type="button" class="btn btn-upgrade" data-tier="2" disabled>Select NFT first</button>
+                </article>
+                <article class="upgrade-card upgrade-card-featured" data-tier="3">
+                    <div class="upgrade-card-glow"></div>
+                    <span class="upgrade-card-badge">Omega</span>
+                    <h3 class="upgrade-card-title">Upgrade 3</h3>
+                    <p class="upgrade-card-desc">Angel or Demon + Omega Token</p>
+                    <p class="upgrade-card-price">$20</p>
+                    <button type="button" class="btn btn-upgrade" data-tier="3" disabled>Select NFT first</button>
+                </article>
+            </div>
+        </section>
+
+        <!-- Modals for upgrade flow -->
+        <div class="upgrade-modal-overlay" id="upgrade-modal-overlay" style="display: none;">
+            <div class="upgrade-modal" id="upgrade-modal">
+                <div class="upgrade-modal-content" id="upgrade-modal-content"></div>
+                <div class="upgrade-modal-actions">
+                    <button type="button" class="btn btn-upgrade" id="upgrade-modal-submit">Confirm</button>
+                    <button type="button" class="btn btn-upgrade upgrade-modal-cancel" id="upgrade-modal-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="custom-cursor"></div>
+    <div id="cursor-trail"></div>
+
+    <script type="module" src="mint.js"></script>
+    <script src="config.local.js"></script>
+    <script src="script.js"></script>
+    <script src="upgrades-usdc.js"></script>
+    <script src="upgrades-nfts.js"></script>
+    <script>
+        (function () {
+            const cards = document.querySelectorAll('.upgrade-card');
+            const nftList = document.getElementById('upgrades-nft-list');
+            var loadedWallet = null;
+
+            function loadNfts() {
+                var provider = typeof getPhantomProvider === 'function' ? getPhantomProvider() : null;
+                var pubkey = provider?.publicKey;
+                if (!pubkey || !nftList || typeof window.fetchDivinityNfts !== 'function') return;
+                var walletStr = pubkey.toString();
+                if (loadedWallet === walletStr) return;
+                var rpc = window.DIVINITY_RPC_URL || 'https://api.devnet.solana.com';
+                var collection = window.DIVINITY_COLLECTION_MINT || '';
+
+                loadedWallet = walletStr;
+                nftList.classList.add('loading');
+                nftList.innerHTML = '<span class="upgrade-nft-empty">Loading your NFTs…</span>';
+
+                window.fetchDivinityNfts(rpc, walletStr, collection).then(function (nfts) {
+                    nftList.classList.remove('loading');
+                    nftList.innerHTML = '';
+                    if (!nfts.length) {
+                        nftList.innerHTML = '<span class="upgrade-nft-empty">No NFTs in this wallet. Mint one on the homepage first.</span>';
+                        loadedWallet = null;
+                        return;
+                    }
+                    nfts.forEach(function (nft) {
+                        var item = document.createElement('div');
+                        item.className = 'upgrade-nft-item';
+                        item.setAttribute('data-mint', nft.mint);
+                        item.setAttribute('role', 'button');
+                        item.setAttribute('tabindex', '0');
+                        var imgSrc = (nft.image || '').trim();
+                        if (imgSrc && imgSrc.indexOf('ipfs://') === 0) imgSrc = 'https://gateway.ipfs.io/ipfs/' + imgSrc.replace(/^ipfs:\/\//, '');
+                        if (imgSrc && imgSrc.indexOf('ar://') === 0) imgSrc = 'https://arweave.net/' + imgSrc.replace(/^ar:\/\//, '');
+                        var label = (nft.name || 'NFT').substring(0, 20) + (nft.mint ? ' • ' + nft.mint.slice(0, 4) + '…' + nft.mint.slice(-4) : '');
+                        item.innerHTML = '<img src="' + (imgSrc || '').replace(/"/g, '&quot;') + '" alt="" loading="lazy" onerror="this.style.background=\'#333\'">' +
+                            '<span class="upgrade-nft-label">' + (label || nft.mint).replace(/</g, '&lt;') + '</span>';
+                        item.addEventListener('click', function () {
+                            nftList.querySelectorAll('.upgrade-nft-item').forEach(function (e) { e.classList.remove('selected'); });
+                            item.classList.add('selected');
+                            checkState();
+                        });
+                        nftList.appendChild(item);
+                    });
+                    checkState();
+                }).catch(function (err) {
+                    nftList.classList.remove('loading');
+                    nftList.innerHTML = '<span class="upgrade-nft-empty">Could not load NFTs. Check the console and try again.</span>';
+                    loadedWallet = null;
+                    console.error('fetchDivinityNfts error', err);
+                });
+            }
+
+            function checkState() {
+                var walletBtnText = document.querySelector('.nav-wallet-btn-text');
+                var isConnected = walletBtnText && walletBtnText.textContent !== 'Connect Wallet' && walletBtnText.textContent !== 'Install Phantom';
+                if (!isConnected) loadedWallet = null;
+                var hasNfts = nftList && nftList.querySelectorAll('.upgrade-nft-item').length > 0;
+                var selected = document.querySelector('.upgrade-nft-item.selected');
+                if (selected) {
+                    var prices = { '1': '5', '2': '10', '3': '20' };
+                    cards.forEach(function (c) {
+                        var btn = c.querySelector('.btn-upgrade');
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.textContent = 'Upgrade — $' + (prices[c.dataset.tier] || '');
+                        }
+                    });
+                } else {
+                    cards.forEach(function (c) {
+                        var btn = c.querySelector('.btn-upgrade');
+                        if (btn) {
+                            btn.disabled = !hasNfts;
+                            btn.textContent = hasNfts ? 'Select an NFT above' : 'Select NFT first';
+                        }
+                    });
+                }
+            }
+
+            function tryLoad() {
+                var provider = typeof getPhantomProvider === 'function' ? getPhantomProvider() : null;
+                if (provider?.publicKey && nftList && !nftList.querySelector('.upgrade-nft-item') && !nftList.classList.contains('loading')) {
+                    loadNfts();
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function () { checkState(); tryLoad(); });
+            } else {
+                checkState();
+                tryLoad();
+            }
+            setInterval(function () {
+                checkState();
+                tryLoad();
+            }, 1500);
+
+            // ——— Upgrade 1/2/3: record + mint NFT ———
+            var pendingUpgrade = null;
+            var pendingChoice = null;
+            var apiUrl = window.DIVINITY_UPGRADE_API_URL || '';
+            var overlay = document.getElementById('upgrade-modal-overlay');
+            var modalContent = document.getElementById('upgrade-modal-content');
+            var modalSubmit = document.getElementById('upgrade-modal-submit');
+            var modalCancel = document.getElementById('upgrade-modal-cancel');
+
+            function getSelectedMint() {
+                var el = document.querySelector('.upgrade-nft-item.selected');
+                return el ? el.getAttribute('data-mint') : null;
+            }
+
+            function getWallet() {
+                var p = typeof getPhantomProvider === 'function' ? getPhantomProvider() : null;
+                return p?.publicKey ? p.publicKey.toString() : '';
+            }
+
+            function showModal(html, hideSubmitUntilChoice) {
+                if (!overlay || !modalContent) return;
+                pendingChoice = null;
+                modalContent.innerHTML = html;
+                modalSubmit.style.display = hideSubmitUntilChoice ? 'none' : 'block';
+                overlay.style.display = 'flex';
+            }
+
+            function closeModal() {
+                if (overlay) overlay.style.display = 'none';
+                pendingUpgrade = null;
+                pendingChoice = null;
+            }
+
+            var UPGRADE_USD = { '1': 5, '2': 10, '3': 20 };
+
+            function submitUpgrade() {
+                var mint = getSelectedMint();
+                var wallet = getWallet();
+                if (!mint || !wallet) {
+                    alert('Select an NFT and connect your wallet.');
+                    return;
+                }
+                if ((pendingUpgrade.tier === 2 || pendingUpgrade.tier === 3) && !pendingChoice) {
+                    alert('Choose Angel or Demon.');
+                    return;
+                }
+                var body = { tier: pendingUpgrade.tier, solanaWallet: wallet, nftMint: mint };
+                if (pendingUpgrade.tier === 2 || pendingUpgrade.tier === 3) body.choice = pendingChoice;
+
+                var amountUsd = UPGRADE_USD[String(pendingUpgrade.tier)] || 0;
+                var provider = typeof getPhantomProvider === 'function' ? getPhantomProvider() : null;
+                var rpc = window.DIVINITY_RPC_URL || 'https://api.devnet.solana.com';
+
+                if (!provider?.publicKey) {
+                    alert('Connect your wallet first.');
+                    return;
+                }
+                if (typeof window.divinityPayUsdc !== 'function') {
+                    alert('USDC payment script not loaded.');
+                    return;
+                }
+                modalSubmit.disabled = true;
+
+                function doRecordAndMint() {
+                    var cmId = window.CANDY_MACHINE_ID || '';
+                    if (!cmId || typeof window.divinityMint !== 'function') {
+                        alert('Mint not available. Candy Machine not set.');
+                        modalSubmit.disabled = false;
+                        return;
+                    }
+                    var post = apiUrl ? fetch(apiUrl + '/api/upgrade', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    }).then(function (r) {
+                        return r.json().then(function (data) {
+                            if (!r.ok) throw new Error(data.error || 'Upgrade failed');
+                            return data;
+                        });
+                    }) : Promise.resolve();
+                    post.then(function () {
+                        return window.divinityMint(provider, cmId, rpc);
+                    }).then(function () {
+                        alert('USDC received. Upgrade recorded and NFT minted. Check your wallet.');
+                        closeModal();
+                    }).catch(function (err) {
+                        alert(err.message || 'Mint or request failed.');
+                    }).finally(function () {
+                        modalSubmit.disabled = false;
+                    });
+                }
+
+                window.divinityPayUsdc(provider, amountUsd, rpc).then(doRecordAndMint).catch(function (err) {
+                    alert('USDC payment failed: ' + (err.message || err));
+                    modalSubmit.disabled = false;
+                });
+            }
+
+            function openTier1() {
+                pendingUpgrade = { tier: 1 };
+                showModal('<p class="upgrade-modal-title">Upgrade 1 — $5 USDC</p><p>You will receive a <strong>random</strong> Angel or Demon NFT. Confirm to pay $5 USDC and mint.</p>', false);
+            }
+            function openTier2() {
+                pendingUpgrade = { tier: 2 };
+                showModal(
+                    '<p class="upgrade-modal-title">Upgrade 2 — $10 USDC</p><p>Choose your path. Then pay $10 USDC and mint.</p>' +
+                    '<div class="upgrade-modal-choices"><button type="button" class="upgrade-choice-btn" data-choice="angel">Angel</button><button type="button" class="upgrade-choice-btn" data-choice="demon">Demon</button></div>',
+                    true
+                );
+                modalContent.querySelectorAll('.upgrade-choice-btn').forEach(function (b) {
+                    b.addEventListener('click', function () {
+                        pendingChoice = this.getAttribute('data-choice');
+                        modalContent.querySelectorAll('.upgrade-choice-btn').forEach(function (x) { x.classList.remove('selected'); });
+                        this.classList.add('selected');
+                        modalSubmit.style.display = 'block';
+                    });
+                });
+            }
+            function openTier3() {
+                pendingUpgrade = { tier: 3 };
+                showModal(
+                    '<p class="upgrade-modal-title">Upgrade 3 — $20 USDC</p><p>Choose Angel or Demon. Then pay $20 USDC and mint.</p>' +
+                    '<div class="upgrade-modal-choices"><button type="button" class="upgrade-choice-btn" data-choice="angel">Angel</button><button type="button" class="upgrade-choice-btn" data-choice="demon">Demon</button></div>',
+                    true
+                );
+                modalContent.querySelectorAll('.upgrade-choice-btn').forEach(function (b) {
+                    b.addEventListener('click', function () {
+                        pendingChoice = this.getAttribute('data-choice');
+                        modalContent.querySelectorAll('.upgrade-choice-btn').forEach(function (x) { x.classList.remove('selected'); });
+                        this.classList.add('selected');
+                        modalSubmit.style.display = 'block';
+                    });
+                });
+            }
+
+            cards.forEach(function (card) {
+                var btn = card.querySelector('.btn-upgrade');
+                if (!btn) return;
+                btn.addEventListener('click', function () {
+                    if (btn.disabled) return;
+                    var mint = getSelectedMint();
+                    if (!mint) { alert('Select an NFT first.'); return; }
+                    var tier = card.dataset.tier;
+                    if (tier === '1') openTier1();
+                    else if (tier === '2') openTier2();
+                    else if (tier === '3') openTier3();
+                });
+            });
+
+            if (modalSubmit) modalSubmit.addEventListener('click', submitUpgrade);
+            if (modalCancel) modalCancel.addEventListener('click', closeModal);
+            if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+        })();
+    </script>
+</body>
+
+</html>

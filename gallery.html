@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | Divinity</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="theme-heaven gallery-page" id="body">
+    <canvas id="bg-canvas"></canvas>
+    <div id="god-rays" class="god-rays"></div>
+    <div id="vignette"></div>
+    <div id="hell-overlay" class="hell-overlay"></div>
+    <div id="hell-flames" class="hell-flames"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><span class="logo-text">DIVINITY</span></a>
+            </div>
+            <div class="nav-center">
+                <a href="lore.html" class="nav-link">Lore</a>
+                <a href="gallery.html" class="nav-link active">Gallery</a>
+                <a href="upgrades.html" class="nav-link">Upgrades</a>
+                <a href="play.html" class="nav-link">Play</a>
+            </div>
+            <div class="nav-right">
+                <div class="realm-toggle" id="realm-toggle">
+                    <div class="toggle-track">
+                        <div class="toggle-indicator"></div>
+                    </div>
+                    <span class="realm-label label-heaven active">HEAVEN</span>
+                    <span class="realm-label label-hell">HELL</span>
+                </div>
+                <button type="button" class="nav-wallet-btn" id="nav-wallet-btn" title="Connect or disconnect wallet">
+                    <span class="nav-wallet-btn-text">Connect Wallet</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="gallery-main">
+        <div class="gallery-nav-spacer" aria-hidden="true"></div>
+        <header class="gallery-header">
+            <h1 class="gallery-title">Gallery</h1>
+            <p class="gallery-subtitle">Souls of Light and Shadow — a glimpse of the Eternal Conflict.</p>
+            <div class="gallery-tabs" role="tablist">
+                <button type="button" class="gallery-tab active" data-tab="angel" role="tab" aria-selected="true">Angel</button>
+                <button type="button" class="gallery-tab" data-tab="demon" role="tab" aria-selected="false">Demon</button>
+            </div>
+        </header>
+
+        <section class="gallery-section gallery-angels gallery-panel" id="gallery-panel-angel" role="tabpanel">
+            <h2 class="gallery-section-title">Souls of Light</h2>
+            <div class="gallery-grid" id="gallery-angels">
+                <!-- 50 angel images: gallery/angels/1.png .. 50.png -->
+            </div>
+        </section>
+
+        <section class="gallery-section gallery-demons gallery-panel" id="gallery-panel-demon" role="tabpanel" hidden>
+            <h2 class="gallery-section-title">Souls of Shadow</h2>
+            <div class="gallery-grid gallery-grid--demons" id="gallery-demons">
+                <!-- 50 demon images: gallery/demons/1.png .. 50.png -->
+            </div>
+        </section>
+    </main>
+
+    <div id="custom-cursor"></div>
+    <div id="cursor-trail"></div>
+
+    <script src="config.local.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (function () {
+            var angelsEl = document.getElementById('gallery-angels');
+            var demonsEl = document.getElementById('gallery-demons');
+            if (!angelsEl || !demonsEl) return;
+
+            for (var i = 1; i <= 50; i++) {
+                var a = document.createElement('div');
+                a.className = 'gallery-card gallery-card--angel';
+                a.innerHTML = '<img src="gallery/angels/' + i + '.png" alt="Soul of Light ' + i + '" loading="lazy">';
+                angelsEl.appendChild(a);
+
+                var d = document.createElement('div');
+                d.className = 'gallery-card gallery-card--demon';
+                d.innerHTML = '<img src="gallery/demons/' + i + '.png" alt="Soul of Shadow ' + i + '" loading="lazy">';
+                demonsEl.appendChild(d);
+            }
+
+            var tabs = document.querySelectorAll('.gallery-tab');
+            var panelAngel = document.getElementById('gallery-panel-angel');
+            var panelDemon = document.getElementById('gallery-panel-demon');
+            function setGalleryTheme(hell) {
+                document.body.classList.remove('theme-heaven', 'theme-hell');
+                document.body.classList.add(hell ? 'theme-hell' : 'theme-heaven');
+                var labelHeaven = document.querySelector('.label-heaven');
+                var labelHell = document.querySelector('.label-hell');
+                if (labelHeaven) labelHeaven.classList.toggle('active', !hell);
+                if (labelHell) labelHell.classList.toggle('active', hell);
+                var statusEl = document.getElementById('status-text');
+                if (statusEl) statusEl.textContent = hell ? 'TARTARUS' : 'ELYSIUM';
+                if (window.divinitySetTheme) window.divinitySetTheme(hell ? 'hell' : 'heaven');
+            }
+
+            tabs.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var isAngel = this.getAttribute('data-tab') === 'angel';
+                    tabs.forEach(function (t) {
+                        t.classList.toggle('active', t === btn);
+                        t.setAttribute('aria-selected', t === btn ? 'true' : 'false');
+                    });
+                    if (panelAngel) panelAngel.hidden = !isAngel;
+                    if (panelDemon) panelDemon.hidden = isAngel;
+                    setGalleryTheme(!isAngel);
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companions: Divinity Game | Play</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="theme-heaven play-page" id="body">
+    <canvas id="bg-canvas"></canvas>
+    <div id="god-rays" class="god-rays"></div>
+    <div id="vignette"></div>
+    <div id="hell-overlay" class="hell-overlay"></div>
+    <div id="hell-flames" class="hell-flames"></div>
+
+    <!-- Play page video popup (hell background + fire particles, close with X) -->
+    <div id="play-video-popup" class="play-video-popup" aria-hidden="false">
+        <div class="play-video-popup-bg"></div>
+        <canvas id="play-video-popup-particles" class="play-video-popup-particles" aria-hidden="true"></canvas>
+        <button type="button" class="play-video-popup-close" id="play-video-popup-close" aria-label="Close video">×</button>
+        <div class="play-video-popup-video-wrap">
+            <video id="play-video-popup-video" class="play-video-popup-video" autoplay muted playsinline loop preload="auto">
+                <source src="assets/divinity game.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><span class="logo-text">DIVINITY</span></a>
+            </div>
+            <div class="nav-center">
+                <a href="lore.html" class="nav-link">Lore</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="upgrades.html" class="nav-link">Upgrades</a>
+                <a href="play.html" class="nav-link active">Play</a>
+            </div>
+            <div class="nav-right">
+                <div class="realm-toggle" id="realm-toggle">
+                    <div class="toggle-track">
+                        <div class="toggle-indicator"></div>
+                    </div>
+                    <span class="realm-label label-heaven active">HEAVEN</span>
+                    <span class="realm-label label-hell">HELL</span>
+                </div>
+                <button type="button" class="nav-wallet-btn" id="nav-wallet-btn" title="Connect or disconnect wallet">
+                    <span class="nav-wallet-btn-text">Connect Wallet</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="play-main">
+        <section class="play-section">
+            <h1 class="play-title">Companions: Divinity Game</h1>
+            <p class="play-subtitle">Choose your path. Battle demons. Save your soul.</p>
+            <div class="play-preview-wrap">
+                <img src="assets/play-preview.png" alt="Companions: Divinity Game" class="play-preview-img">
+            </div>
+            <a href="https://store.hyperplay.xyz/game/omegalabs/companions" target="_blank" rel="noopener noreferrer" class="btn btn-play">
+                <span class="btn-text">Play</span>
+            </a>
+        </section>
+    </main>
+
+    <div id="custom-cursor"></div>
+    <div id="cursor-trail"></div>
+
+    <script src="config.local.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (function () {
+            var popup = document.getElementById('play-video-popup');
+            var closeBtn = document.getElementById('play-video-popup-close');
+            var video = document.getElementById('play-video-popup-video');
+            var particlesCanvas = document.getElementById('play-video-popup-particles');
+            if (!popup || !closeBtn || !video) return;
+
+            var particleCtx = particlesCanvas ? particlesCanvas.getContext('2d') : null;
+            var popupParticles = [];
+            var popupAnimId = null;
+
+            function resizePopupCanvas() {
+                if (!particlesCanvas) return;
+                particlesCanvas.width = window.innerWidth;
+                particlesCanvas.height = window.innerHeight;
+            }
+            function initPopupParticles() {
+                popupParticles = [];
+                var w = particlesCanvas ? particlesCanvas.width : window.innerWidth;
+                var h = particlesCanvas ? particlesCanvas.height : window.innerHeight;
+                for (var i = 0; i < 220; i++) {
+                    popupParticles.push({
+                        x: Math.random() * w,
+                        y: h + Math.random() * 200,
+                        size: Math.random() * 5 + 1,
+                        speedX: Math.random() * 1 - 0.5,
+                        speedY: -(Math.random() * 3 + 1),
+                        life: Math.random() * 100,
+                        maxLife: 100 + Math.random() * 100,
+                        alpha: 0
+                    });
+                }
+            }
+            function updatePopupParticle(p, w, h) {
+                p.x += p.speedX + Math.sin(p.life * 0.1) * 1.5;
+                p.y += p.speedY;
+                p.life++;
+                if (p.life < 30) p.alpha = p.life / 30;
+                else if (p.life > p.maxLife - 30) p.alpha = (p.maxLife - p.life) / 30;
+                else p.alpha = 1;
+                if (p.life >= p.maxLife || p.y < -50) {
+                    p.x = Math.random() * w;
+                    p.y = h + 10;
+                    p.life = 0;
+                    p.maxLife = 100 + Math.random() * 100;
+                }
+            }
+            function drawPopupParticles() {
+                if (!particleCtx || !particlesCanvas) return;
+                var w = particlesCanvas.width;
+                var h = particlesCanvas.height;
+                particleCtx.clearRect(0, 0, w, h);
+                for (var i = 0; i < popupParticles.length; i++) {
+                    var p = popupParticles[i];
+                    updatePopupParticle(p, w, h);
+                    var t = p.y / h;
+                    var g = Math.floor(60 + t * 140 + (p.life % 40));
+                    particleCtx.beginPath();
+                    particleCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    particleCtx.fillStyle = 'rgba(255,' + g + ',0,' + p.alpha * 0.85 + ')';
+                    particleCtx.shadowBlur = 12 + p.size;
+                    particleCtx.shadowColor = 'rgba(255,' + (g * 0.8) + ',0,0.9)';
+                    particleCtx.fill();
+                    particleCtx.shadowBlur = 0;
+                }
+                popupAnimId = requestAnimationFrame(drawPopupParticles);
+            }
+            function startPopupParticles() {
+                resizePopupCanvas();
+                initPopupParticles();
+                if (particlesCanvas && !popup.classList.contains('play-video-popup-hidden')) drawPopupParticles();
+            }
+            function stopPopupParticles() {
+                if (popupAnimId) cancelAnimationFrame(popupAnimId);
+                popupAnimId = null;
+            }
+
+            window.addEventListener('resize', resizePopupCanvas);
+
+            function closePopup() {
+                popup.classList.add('play-video-popup-hidden');
+                popup.setAttribute('aria-hidden', 'true');
+                video.pause();
+                stopPopupParticles();
+            }
+            closeBtn.addEventListener('click', closePopup);
+            popup.addEventListener('click', function (e) {
+                if (e.target === popup || e.target.classList.contains('play-video-popup-bg')) closePopup();
+            });
+
+            startPopupParticles();
+        })();
+    </script>
+</body>
+
+</html>

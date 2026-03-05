@@ -1,0 +1,27 @@
+﻿[1/1] Looking up candy machine
+
+Candy machine ID: 4LaVSCQQuwzDK5M8rqfkQM3btZCjKKhUAY9Keb1Lrvjp
+ :
+ :.. authority: FTCQPhg846q25KuVkQa6Nyb2TYPJjdYayqWdSLBijPBX
+ :.. mint authority: FTCQPhg846q25KuVkQa6Nyb2TYPJjdYayqWdSLBijPBX
+ :.. collection mint: CJigGTCjGejLCoupSNY7hPUzKFiXwazun9WW9KxEyL9A
+ :.. account version: V2
+ :.. token standard: NonFungible
+ :.. features: none
+ :.. max supply: 0
+ :.. items redeemed: 0
+ :.. items available: 1
+ :.. symbol: DIV
+ :.. seller fee basis points: 0% (0)
+ :.. is mutable: true
+ :.. creators: 
+ :   :.. 1: FTCQPhg846q25KuVkQa6Nyb2TYPJjdYayqWdSLBijPBX (100%)
+ :.. hidden settings: none
+ :.. config line settings: 
+     :.. prefix_name: Divinity #1
+     :.. name_length: 0
+     :.. prefix_uri: https://gateway.irys.xyz/DKgTn8dA9Fi6FxPWq98G23sTpi6UmhW3EZeVMMb4HeKd
+     :.. uri_length: 0
+     :.. is_sequential: false
+
+Command successful.

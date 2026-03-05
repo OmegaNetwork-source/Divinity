@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divinity | The Eternal Conflict</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="theme-heaven" id="body">
+    <!-- Dynamic Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+    <div id="god-rays" class="god-rays"></div>
+    <div id="vignette"></div>
+    <div id="hell-overlay" class="hell-overlay"></div>
+    <div id="hell-flames" class="hell-flames"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-text">DIVINITY</span>
+            </div>
+
+            <div class="nav-center">
+                <a href="lore.html" class="nav-link">Lore</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="upgrades.html" class="nav-link">Upgrades</a>
+                <a href="play.html" class="nav-link">Play</a>
+            </div>
+
+            <div class="nav-right">
+                <!-- Realm Toggle Switch -->
+                <div class="realm-toggle" id="realm-toggle">
+                    <div class="toggle-track">
+                        <div class="toggle-indicator"></div>
+                    </div>
+                    <span class="realm-label label-heaven active">HEAVEN</span>
+                    <span class="realm-label label-hell">HELL</span>
+                </div>
+                <button type="button" class="nav-wallet-btn" id="nav-wallet-btn" title="Connect or disconnect wallet">
+                    <span class="nav-wallet-btn-text">Connect Wallet</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <div class="realm-status">CURRENT REALM: <span id="status-text">ELYSIUM</span></div>
+                <h1 class="hero-title" id="main-title" data-text="DIVINITY">DIVINITY</h1>
+                <p class="hero-subtitle" id="main-subtitle">Choose your side. Ascend or fall—the eternal war has only begun.</p>
+
+                <div class="cta-container">
+                    <button class="btn btn-primary" id="btn-mint">
+                        <span class="btn-text" id="btn-mint-text">CONNECT WALLET</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+                <p class="wallet-hint" id="wallet-hint" style="display: none;"></p>
+            </div>
+        </section>
+
+        <!-- Marquee / Ticker -->
+        <div class="ticker">
+            <div class="ticker-track" id="ticker-track">
+                <span>Upgradeable NFT</span>
+                <span class="separator">✦</span>
+                <span>Save Your Soul</span>
+                <span class="separator">✦</span>
+                <span>The Fight Starts Soon</span>
+                <span class="separator">✦</span>
+                <span>Upgradeable NFT</span>
+                <span class="separator">✦</span>
+                <span>Save Your Soul</span>
+                <span class="separator">✦</span>
+                <span>The Fight Starts Soon</span>
+                <span class="separator">✦</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-trail"></div>
+
+    <script type="module" src="mint.js"></script>
+    <script src="config.local.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

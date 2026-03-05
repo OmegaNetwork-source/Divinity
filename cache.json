@@ -1,0 +1,18 @@
+{
+  "program": {
+    "candyMachine": "2LnEZA5LquK5td6G5RtdgpPxhTNgN2tGENQyrRo8ta6g",
+    "candyGuard": "",
+    "candyMachineCreator": "61VE7Lw6ow2TUdA7TZdfH5yCmPuE9cDwjf7E6hcUFtzC",
+    "collectionMint": "CU9DXF5f9dJCUXV9oFwoFPoJVisH8H3tG49HyEkbEqs4"
+  },
+  "items": {
+    "-1": {
+      "name": "Divinity",
+      "image_hash": "24c4d2bdf3a769cb4dc3f21d65a6d7165bacf239eeef23f14d10fd1a73b8b30c",
+      "image_link": "https://gateway.irys.xyz/bI33EfHJySLeXFq2_igX4u_aiaogCq0tiAjRtRjHKzA?ext=jpg",
+      "metadata_hash": "2e13ea0c0b88f28fe4e7d13aa1cfa38f41dad3811520caf8e43f8e4fe13d5ec3",
+      "metadata_link": "https://gateway.irys.xyz/_AZk5p5c_zxES1bFe7FaUwOSZ0CxebFfQis9iOzdj5M",
+      "onChain": true
+    }
+  }
+}
