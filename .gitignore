@@ -9,4 +9,7 @@ cache_backup.json
 cache.json.bak
 sugar.log
 
-assets/
+assets/*
+!assets/play-preview.png
+!assets/divinity game.mp4
+!assets/Video.mov
