@@ -248,15 +248,29 @@ const labels = {
     hell: document.querySelector('.label-hell')
 };
 let isHeavenMode = true;
+const isGallery = window.location.pathname.includes('gallery.html');
+const savedTheme = localStorage.getItem('divinity_theme');
+
+if (savedTheme === 'hell' && !isGallery) {
+    isHeavenMode = false;
+}
 
 function applyTheme(heaven) {
     isHeavenMode = !!heaven;
+    if (!isGallery) {
+        localStorage.setItem('divinity_theme', isHeavenMode ? 'heaven' : 'hell');
+    }
     document.body.classList.remove('theme-heaven', 'theme-hell');
     document.body.classList.add(isHeavenMode ? 'theme-heaven' : 'theme-hell');
     if (labels.heaven) labels.heaven.classList.toggle('active', isHeavenMode);
     if (labels.hell) labels.hell.classList.toggle('active', !isHeavenMode);
     if (statusText) statusText.textContent = isHeavenMode ? "ELYSIUM" : "TARTARUS";
     if (typeof initParticles === 'function') initParticles();
+}
+
+// Apply initial state if it's not the default heaven
+if (!isHeavenMode && !isGallery) {
+    applyTheme(false);
 }
 
 window.divinitySetTheme = function (theme) {

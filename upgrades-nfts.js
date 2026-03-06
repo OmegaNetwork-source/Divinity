@@ -68,7 +68,8 @@
           const data = raw instanceof Uint8Array ? raw : new Uint8Array(raw);
           const uri = parseMetadataUri(data);
           if (uri) {
-            const json = await fetch(uri).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+            const cleanUri = uri.replace(/\0/g, '');
+            const json = await fetch(cleanUri).then((r) => (r.ok ? r.json() : null)).catch(() => null);
             if (json) {
               name = json.name ?? 'NFT';
               image = json.image ?? json.image_url ?? '';
@@ -78,7 +79,10 @@
       } catch (_) {
         /* use placeholder */
       }
-      results.push({ mint, name, image });
+
+      if (typeof name === 'string' && name.startsWith('Divinity')) {
+        results.push({ mint, name, image });
+      }
     }
 
     return results;
