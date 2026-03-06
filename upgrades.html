@@ -52,7 +52,8 @@
 
         <section class="upgrades-connect" id="upgrades-connect">
             <h2>Your Divinity NFTs</h2>
-            <p class="upgrades-connect-hint">Connect your wallet to see NFTs you can upgrade. Click one to select it.</p>
+            <p class="upgrades-connect-hint">Connect your wallet to see NFTs you can upgrade. Click one to select it.
+            </p>
             <div class="upgrades-nft-list" id="upgrades-nft-list">
                 <!-- Populated when wallet connected -->
             </div>
@@ -94,7 +95,8 @@
                 <div class="upgrade-modal-content" id="upgrade-modal-content"></div>
                 <div class="upgrade-modal-actions">
                     <button type="button" class="btn btn-upgrade" id="upgrade-modal-submit">Confirm</button>
-                    <button type="button" class="btn btn-upgrade upgrade-modal-cancel" id="upgrade-modal-cancel">Cancel</button>
+                    <button type="button" class="btn btn-upgrade upgrade-modal-cancel"
+                        id="upgrade-modal-cancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -269,30 +271,28 @@
                 }
                 modalSubmit.disabled = true;
 
-                function doRecordAndMint() {
-                    var cmId = window.CANDY_MACHINE_ID || '';
-                    if (!cmId || typeof window.divinityMint !== 'function') {
-                        alert('Mint not available. Candy Machine not set.');
-                        modalSubmit.disabled = false;
-                        return;
-                    }
+                function doRecordAndMint(txSig) {
                     var post = apiUrl ? fetch(apiUrl + '/api/upgrade', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(body)
+                        body: JSON.stringify({ ...body, txSignature: txSig })
                     }).then(function (r) {
                         return r.json().then(function (data) {
                             if (!r.ok) throw new Error(data.error || 'Upgrade failed');
                             return data;
                         });
-                    }) : Promise.resolve();
-                    post.then(function () {
-                        return window.divinityMint(provider, cmId, rpc);
-                    }).then(function () {
-                        alert('USDC received. Upgrade recorded and NFT minted. Check your wallet.');
+                    }) : Promise.resolve({ message: 'Payment recorded.' });
+
+                    post.then(function (data) {
+                        var msg = data.message || 'Upgrade complete!';
+                        if (data.realm) msg = 'Your NFT has been upgraded to ' + data.realm + '! Check your wallet for the new art.';
+                        alert(msg);
                         closeModal();
+                        // Reload NFT list to show updated art
+                        loadedWallet = null;
+                        loadNfts();
                     }).catch(function (err) {
-                        alert(err.message || 'Mint or request failed.');
+                        alert('USDC was paid, but the upgrade failed: ' + (err.message || 'Try again or contact support.'));
                     }).finally(function () {
                         modalSubmit.disabled = false;
                     });

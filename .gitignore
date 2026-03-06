@@ -13,3 +13,8 @@ assets/*
 !assets/play-preview.png
 !assets/divinity game.mp4
 !assets/Video.mov
+
+# Bulk upload working files (large)
+assets_nft/
+upload_progress.json
+manifest_raw.json
