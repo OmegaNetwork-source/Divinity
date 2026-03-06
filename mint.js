@@ -51,7 +51,7 @@
 
     // Fetch blockhash once and reuse for confirmation
     const latest = await umi.rpc.getLatestBlockhash({ commitment: 'confirmed' });
-    let tx = await builder.buildWithBlockhash(umi, latest);
+    let tx = await builder.setBlockhash(latest).build(umi);
     tx = await nftMint.signTransaction(tx);
 
     // Serialize the partially signed transaction into a Uint8Array
