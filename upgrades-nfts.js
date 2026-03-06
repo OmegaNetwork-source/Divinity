@@ -73,6 +73,13 @@
             if (json) {
               name = json.name ?? 'NFT';
               image = json.image ?? json.image_url ?? '';
+
+              if (image && !image.startsWith('http') && !image.startsWith('ipfs://') && !image.startsWith('ar://') && !image.startsWith('data:')) {
+                const lastSlash = cleanUri.lastIndexOf('/');
+                if (lastSlash > 0) {
+                  image = cleanUri.substring(0, lastSlash + 1) + image;
+                }
+              }
             }
           }
         }
