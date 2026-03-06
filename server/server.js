@@ -26,7 +26,9 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3001;
 const DATA_FILE = path.join(__dirname, 'upgrades.json');
-const MANIFEST_FILE = path.join(__dirname, '..', 'upgrade_manifest.json');
+const MANIFEST_FILE = fs.existsSync(path.join(__dirname, 'upgrade_manifest.json'))
+  ? path.join(__dirname, 'upgrade_manifest.json')
+  : path.join(__dirname, '..', 'upgrade_manifest.json');
 const BURNER_KEY_FILE = path.join(__dirname, '..', 'burner.json');
 
 const RPC_URL = process.env.RPC_URL || 'https://mainnet.helius-rpc.com/?api-key=f1722970-f727-465e-bbc2-5b4d2ba7884c';
