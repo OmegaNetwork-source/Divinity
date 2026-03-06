@@ -17,7 +17,7 @@ const RPC_URL = (typeof window !== 'undefined' && window.DIVINITY_RPC_URL) || 'h
 // Divinity collection mint (from sugar deploy / cache.json) – used on upgrades page to list user's NFTs
 const COLLECTION_MINT = 'CU9DXF5f9dJCUXV9oFwoFPoJVisH8H3tG49HyEkbEqs4';
 // Upgrade API (Node server in /server)
-const UPGRADE_API_URL = (typeof window !== 'undefined' && window.location?.hostname === 'localhost') ? 'http://localhost:3001' : '';
+const UPGRADE_API_URL = 'https://divinity-production.up.railway.app';
 
 // USDC for upgrades ($5 / $10 / $20). Devnet = test USDC; mainnet = real USDC.
 const USDC_MINT_DEVNET = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
