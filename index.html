@@ -35,7 +35,7 @@
 
             <div class="nav-right">
                 <!-- Realm Toggle Switch -->
-                <div class="realm-toggle" id="realm-toggle">
+                <div class="realm-toggle" id="realm-toggle" onclick="window.divinityRealmClick(event)">
                     <div class="toggle-track">
                         <div class="toggle-indicator"></div>
                     </div>
@@ -50,12 +50,13 @@
     </nav>
 
     <!-- Main Content -->
-    <main>
+    <main class="index-main">
         <section class="hero">
             <div class="hero-content">
                 <div class="realm-status">CURRENT REALM: <span id="status-text">ELYSIUM</span></div>
                 <h1 class="hero-title" id="main-title" data-text="DIVINITY">DIVINITY</h1>
-                <p class="hero-subtitle" id="main-subtitle">Choose your side. Ascend or fall—the eternal war has only begun.</p>
+                <p class="hero-subtitle" id="main-subtitle">Choose your side. Ascend or fall—the eternal war has only
+                    begun.</p>
 
                 <div class="cta-container">
                     <button class="btn btn-primary" id="btn-mint">
@@ -90,6 +91,7 @@
     <div id="custom-cursor"></div>
     <div id="cursor-trail"></div>
 
+    <script src="theme-toggle.js"></script>
     <script type="module" src="mint.js"></script>
     <script src="config.local.js"></script>
     <script src="script.js"></script>

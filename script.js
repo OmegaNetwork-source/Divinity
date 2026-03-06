@@ -1,3 +1,5 @@
+// DIVINITY SCRIPT V1.2.3 - High-reliability theme toggle
+console.log('--- Divinity Script V1.2.3 Initialized ---');
 // ─────────── Phantom Wallet & Mint ───────────
 const btnMint = document.getElementById('btn-mint');
 const btnMintText = document.getElementById('btn-mint-text');
@@ -84,13 +86,23 @@ function updateWalletUI(connected, publicKey) {
 }
 
 async function connectPhantom() {
+    console.log('--- Attempting Phantom connection ---');
     const provider = getPhantomProvider();
     if (!provider) {
+        console.log('No provider found, opening phantom.app');
         window.open('https://phantom.app/', '_blank');
         return;
     }
+
+    // Security warning for non-localhost IP addresses
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !window.location.protocol.includes('https')) {
+        console.warn('Phantom connection might fail on non-localhost/non-HTTPS origin:', window.location.origin);
+        alert('CRITICAL: Phantom wallet BLOCKS connections on local IP addresses (like ' + window.location.hostname + ') for security.\n\nPlease close this tab and open the site at:\nhttp://localhost:8080/\n\nThis will fix the "nothing connects" issue.');
+    }
+
     try {
         const { publicKey } = await provider.connect();
+        console.log('Connected successfully:', publicKey.toString());
         updateWalletUI(true, publicKey);
     } catch (err) {
         if (err.code === 4001) {
@@ -240,58 +252,23 @@ document.querySelectorAll('a, button').forEach(el => {
     el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
 });
 
-// Theme Toggle Logic
-const toggleBtn = document.getElementById('realm-toggle');
-const statusText = document.getElementById('status-text');
-const labels = {
-    heaven: document.querySelector('.label-heaven'),
-    hell: document.querySelector('.label-hell')
-};
-let isHeavenMode = true;
-const isGallery = window.location.pathname.includes('gallery.html');
-const savedTheme = localStorage.getItem('divinity_theme');
-
-if (savedTheme === 'hell' && !isGallery) {
-    isHeavenMode = false;
+// Theme is handled by theme-toggle.js (loaded first on every page). Particles read from body class.
+function isHeavenMode() {
+    return !document.body.classList.contains('theme-hell');
 }
-
-function applyTheme(heaven) {
-    isHeavenMode = !!heaven;
-    if (!isGallery) {
-        localStorage.setItem('divinity_theme', isHeavenMode ? 'heaven' : 'hell');
-    }
-    document.body.classList.remove('theme-heaven', 'theme-hell');
-    document.body.classList.add(isHeavenMode ? 'theme-heaven' : 'theme-hell');
-    if (labels.heaven) labels.heaven.classList.toggle('active', isHeavenMode);
-    if (labels.hell) labels.hell.classList.toggle('active', !isHeavenMode);
-    if (statusText) statusText.textContent = isHeavenMode ? "ELYSIUM" : "TARTARUS";
-    if (typeof initParticles === 'function') initParticles();
-}
-
-// Apply initial state if it's not the default heaven
-if (!isHeavenMode && !isGallery) {
-    applyTheme(false);
-}
-
-window.divinitySetTheme = function (theme) {
-    applyTheme(theme !== 'hell');
-};
-
-if (toggleBtn) toggleBtn.addEventListener('click', () => {
-    applyTheme(!isHeavenMode);
-});
 
 // Advanced Canvas Particles (Million Dollar Effect)
 const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas ? canvas.getContext('2d') : null;
 let width, height;
 
 function resize() {
+    if (!canvas) return;
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
 }
 window.addEventListener('resize', resize);
-resize();
+if (canvas) resize();
 
 class Particle {
     constructor() {
@@ -299,13 +276,14 @@ class Particle {
     }
 
     reset() {
+        var heaven = isHeavenMode();
         this.x = Math.random() * width;
-        this.y = isHeavenMode ? Math.random() * height : height + Math.random() * 200;
-        this.size = Math.random() * (isHeavenMode ? 2 : 5) + (isHeavenMode ? 0.5 : 1);
+        this.y = heaven ? Math.random() * height : height + Math.random() * 200;
+        this.size = Math.random() * (heaven ? 2 : 5) + (heaven ? 0.5 : 1);
         this.speedX = Math.random() * 1 - 0.5;
 
         // Heaven falls slowly, Hell rises quickly
-        this.speedY = isHeavenMode ? (Math.random() * 0.5 + 0.2) : -(Math.random() * 3 + 1);
+        this.speedY = heaven ? (Math.random() * 0.5 + 0.2) : -(Math.random() * 3 + 1);
 
         this.life = Math.random() * 100;
         this.maxLife = 100 + Math.random() * 100;
@@ -313,7 +291,8 @@ class Particle {
     }
 
     update() {
-        this.x += this.speedX + (isHeavenMode ? Math.sin(this.life * 0.05) * 0.3 : Math.sin(this.life * 0.1) * 1.5);
+        var heaven = isHeavenMode();
+        this.x += this.speedX + (heaven ? Math.sin(this.life * 0.05) * 0.3 : Math.sin(this.life * 0.1) * 1.5);
         this.y += this.speedY;
         this.life++;
 
@@ -326,9 +305,9 @@ class Particle {
             this.alpha = 1;
         }
 
-        if (this.life >= this.maxLife || this.y < -50 || (isHeavenMode && this.y > height + 50)) {
+        if (this.life >= this.maxLife || this.y < -50 || (heaven && this.y > height + 50)) {
             this.reset();
-            if (!isHeavenMode) { this.y = height + 10; }
+            if (!heaven) { this.y = height + 10; }
         }
     }
 
@@ -337,7 +316,7 @@ class Particle {
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
 
         // Heaven: Gold dust / Stars (more particles, slight flicker) | Hell: Flames / Embers
-        if (isHeavenMode) {
+        if (isHeavenMode()) {
             const flicker = 0.7 + 0.3 * Math.sin(this.life * 0.2);
             ctx.fillStyle = `rgba(220, 180, 80, ${this.alpha * 0.6 * flicker})`;
             ctx.shadowBlur = 8 + flicker * 6;
@@ -361,13 +340,14 @@ class Particle {
 let particles = [];
 function initParticles() {
     particles = [];
-    const particleCount = isHeavenMode ? 380 : 580;
+    const particleCount = isHeavenMode() ? 380 : 580;
     for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
     }
 }
 
 function animate() {
+    if (!ctx) return;
     // Clear canvas based on theme
     ctx.clearRect(0, 0, width, height);
 

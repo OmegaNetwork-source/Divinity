@@ -30,7 +30,7 @@
                 <a href="play.html" class="nav-link">Play</a>
             </div>
             <div class="nav-right">
-                <div class="realm-toggle" id="realm-toggle">
+                <div class="realm-toggle" id="realm-toggle" onclick="window.divinityRealmClick(event)">
                     <div class="toggle-track">
                         <div class="toggle-indicator"></div>
                     </div>
@@ -124,7 +124,7 @@
         </section>
 
         <!-- Modals for upgrade flow -->
-        <div class="upgrade-modal-overlay" id="upgrade-modal-overlay" style="display: none;">
+        <div class="upgrade-modal-overlay" id="upgrade-modal-overlay" style="display: none; pointer-events: none;">
             <div class="upgrade-modal" id="upgrade-modal">
                 <div class="upgrade-modal-content" id="upgrade-modal-content"></div>
                 <div class="upgrade-modal-actions">
@@ -139,6 +139,7 @@
     <div id="custom-cursor"></div>
     <div id="cursor-trail"></div>
 
+    <script src="theme-toggle.js"></script>
     <script type="module" src="mint.js"></script>
     <script src="config.local.js"></script>
     <script src="script.js"></script>
@@ -267,10 +268,14 @@
                 modalContent.innerHTML = html;
                 modalSubmit.style.display = hideSubmitUntilChoice ? 'none' : 'block';
                 overlay.style.display = 'flex';
+                overlay.style.pointerEvents = 'auto';
             }
 
             function closeModal() {
-                if (overlay) overlay.style.display = 'none';
+                if (overlay) {
+                    overlay.style.display = 'none';
+                    overlay.style.pointerEvents = 'none';
+                }
                 pendingUpgrade = null;
                 pendingChoice = null;
             }
