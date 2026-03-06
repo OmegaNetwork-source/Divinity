@@ -1278,6 +1278,148 @@ body.theme-hell .upgrade-card {
     cursor: not-allowed;
 }
 
+/* "What is Omega?" link on Upgrade 3 card */
+.upgrade-card-omega-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.2s, letter-spacing 0.2s;
+    letter-spacing: 0.05em;
+}
+
+.upgrade-card-omega-link:hover {
+    opacity: 1;
+    letter-spacing: 0.08em;
+}
+
+/* Omega info section */
+.omega-info-section {
+    margin-top: 64px;
+    padding: 48px 0;
+    scroll-margin-top: 100px;
+}
+
+.omega-info-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.omega-info-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-glow));
+    color: var(--bg-start);
+    margin-bottom: 20px;
+    box-shadow: 0 0 30px var(--accent-glow);
+    animation: omegaPulse 3s ease-in-out infinite;
+}
+
+@keyframes omegaPulse {
+    0%, 100% { box-shadow: 0 0 20px var(--accent-glow); transform: scale(1); }
+    50% { box-shadow: 0 0 40px var(--accent-glow); transform: scale(1.05); }
+}
+
+.omega-info-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.omega-info-lead {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 36px;
+}
+
+.omega-info-lead strong {
+    color: var(--accent-color);
+}
+
+.omega-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+@media (max-width: 768px) {
+    .omega-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.omega-info-card {
+    padding: 24px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(150, 150, 150, 0.2);
+    background: rgba(0, 0, 0, 0.04);
+    text-align: center;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+body.theme-hell .omega-info-card {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.omega-info-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-3px);
+}
+
+.omega-info-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.omega-info-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.omega-info-card p {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.omega-info-card p strong {
+    color: var(--accent-color);
+}
+
+.omega-info-cta {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 16px 24px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(150, 150, 150, 0.15);
+}
+
+body.theme-hell .omega-info-cta {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
 /* Upgrade modal */
 .upgrade-modal-overlay {
     position: fixed;
