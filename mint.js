@@ -12,7 +12,7 @@
     const umiBundle = await import('https://esm.sh/@metaplex-foundation/umi-bundle-defaults');
     const candyMachinePkg = await import('https://esm.sh/@metaplex-foundation/mpl-candy-machine');
     const { publicKey, transactionBuilder, generateSigner, some } = await import('https://esm.sh/@metaplex-foundation/umi');
-    const { setComputeUnitLimit } = await import('https://esm.sh/@metaplex-foundation/mpl-toolbox');
+    const { setComputeUnitLimit, setComputeUnitPrice } = await import('https://esm.sh/@metaplex-foundation/mpl-toolbox');
 
     const createUmi = umiBundle.createUmi;
     const mplCandyMachine = candyMachinePkg.mplCandyMachine || candyMachinePkg.default;
@@ -37,6 +37,7 @@
     const treasury = publicKey("FTCQPhg846q25KuVkQa6Nyb2TYPJjdYayqWdSLBijPBX");
     const builder = transactionBuilder()
       .add(setComputeUnitLimit(umi, { units: 800_000 }))
+      .add(setComputeUnitPrice(umi, { microLamports: 30_002 })) // Added priority fee
       .add(mintV2(umi, {
         candyMachine: cmKey,
         candyGuard: candyMachine.mintAuthority,
@@ -48,7 +49,9 @@
         }
       }));
 
-    let tx = await builder.buildWithLatestBlockhash(umi);
+    // Fetch blockhash once and reuse for confirmation
+    const latest = await umi.rpc.getLatestBlockhash({ commitment: 'confirmed' });
+    let tx = await builder.buildWithBlockhash(umi, latest);
     tx = await nftMint.signTransaction(tx);
 
     // Serialize the partially signed transaction into a Uint8Array
@@ -79,10 +82,19 @@
     }
 
     const conn = new Connection(rpcUrl);
-    const sig = await conn.sendRawTransaction(signedBytes, { skipPreflight: true, preflightCommitment: 'confirmed', maxRetries: 3 });
-    const latest = await conn.getLatestBlockhash('confirmed');
+    // Send with preflight check for better error reporting if it fails immediately
+    const sig = await conn.sendRawTransaction(signedBytes, {
+      skipPreflight: false,
+      preflightCommitment: 'confirmed'
+    });
+
+    // Use the SAME blockhash logic that was used to build the transaction
     await conn.confirmTransaction(
-      { signature: sig, blockhash: latest.blockhash, lastValidBlockHeight: latest.lastValidBlockHeight },
+      {
+        signature: sig,
+        blockhash: latest.blockhash,
+        lastValidBlockHeight: latest.lastValidBlockHeight
+      },
       'confirmed'
     );
 
