@@ -81,11 +81,24 @@ function loadCounters() {
   console.log(`Loaded counters: ${angelCount} Angel upgrades, ${demonCount} Demon upgrades`);
 }
 
+// ─── Load burner key from file or env var ───
+function loadBurnerKey() {
+  // Try env var first (for Railway / cloud deploy)
+  if (process.env.BURNER_KEY) {
+    return JSON.parse(process.env.BURNER_KEY);
+  }
+  // Fall back to file
+  if (fs.existsSync(BURNER_KEY_FILE)) {
+    return JSON.parse(fs.readFileSync(BURNER_KEY_FILE, 'utf8'));
+  }
+  throw new Error('No burner key found. Set BURNER_KEY env var or provide burner.json.');
+}
+
 // ─── Lazy init for Irys (uploads new metadata JSONs) ───
 async function getIrys() {
   if (irysInstance) return irysInstance;
   const Irys = require('@irys/sdk');
-  const keyData = JSON.parse(fs.readFileSync(BURNER_KEY_FILE, 'utf8'));
+  const keyData = loadBurnerKey();
   irysInstance = new Irys({
     url: 'https://node1.irys.xyz',
     token: 'solana',
@@ -105,7 +118,7 @@ async function getUmi() {
   const { keypairIdentity } = require('@metaplex-foundation/umi');
 
   const umi = createUmi(RPC_URL).use(mplTokenMetadata());
-  const keyData = JSON.parse(fs.readFileSync(BURNER_KEY_FILE, 'utf8'));
+  const keyData = loadBurnerKey();
   const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(keyData));
   umi.use(keypairIdentity(keypair));
 
